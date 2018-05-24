@@ -1,3 +1,26 @@
+## rqt_dep (kinetic) - 0.4.9-0
+
+The packages in the `rqt_dep` repository were released into the `kinetic` distro by running `/usr/bin/bloom-release -r kinetic -t kinetic rqt_dep` on `Thu, 24 May 2018 16:06:10 -0000`
+
+The `rqt_dep` package was released.
+
+Version of package(s) in repository `rqt_dep`:
+
+- upstream repository: https://github.com/ros-visualization/rqt_dep.git
+- release repository: https://github.com/ros-gbp/rqt_dep-release.git
+- rosdistro version: `0.4.8-0`
+- old version: `0.4.8-0`
+- new version: `0.4.9-0`
+
+Versions of tools used:
+
+- bloom version: `0.6.4`
+- catkin_pkg version: `0.4.2`
+- rosdep version: `0.12.2`
+- rosdistro version: `0.6.8`
+- vcstools version: `0.1.40`
+
+
 ## rqt_dep (lunar) - 0.4.9-0
 
 The packages in the `rqt_dep` repository were released into the `lunar` distro by running `/usr/bin/bloom-release -r lunar -t lunar rqt_dep` on `Thu, 24 May 2018 15:55:11 -0000`
