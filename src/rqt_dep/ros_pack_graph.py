@@ -40,7 +40,7 @@ import rospkg
 
 from python_qt_binding import loadUi
 from python_qt_binding.QtCore import QFile, QIODevice, Qt, Signal, Slot, QAbstractListModel
-from python_qt_binding.QtGui import  QIcon, QImage, QPainter
+from python_qt_binding.QtGui import QIcon, QImage, QPainter
 from python_qt_binding.QtWidgets import QFileDialog, QGraphicsScene, QWidget, QCompleter
 from python_qt_binding.QtSvg import QSvgGenerator
 
@@ -58,7 +58,9 @@ from rqt_graph.interactive_graphics_view import InteractiveGraphicsView
 
 
 class RepeatedWordCompleter(QCompleter):
+
     """A completer that completes multiple times from a list"""
+
     def pathFromIndex(self, index):
         path = QCompleter.pathFromIndex(self, index)
         lst = str(self.widget().text()).split(',')
@@ -72,7 +74,9 @@ class RepeatedWordCompleter(QCompleter):
 
 
 class StackageCompletionModel(QAbstractListModel):
+
     """Ros package and stacknames"""
+
     def __init__(self, linewidget, rospack, rosstack):
         super(StackageCompletionModel, self).__init__(linewidget)
         self.allnames = sorted(list(set(rospack.list() + rosstack.list())))
@@ -121,7 +125,8 @@ class RosPackGraph(Plugin):
         loadUi(ui_file, self._widget, {'InteractiveGraphicsView': InteractiveGraphicsView})
         self._widget.setObjectName('RosPackGraphUi')
         if context.serial_number() > 1:
-            self._widget.setWindowTitle(self._widget.windowTitle() + (' (%d)' % context.serial_number()))
+            self._widget.setWindowTitle(
+                self._widget.windowTitle() + (' (%d)' % context.serial_number()))
 
         self._scene = QGraphicsScene()
         self._scene.setBackgroundBrush(Qt.white)
@@ -153,7 +158,7 @@ class RosPackGraph(Plugin):
         self._widget.filter_line_edit.editingFinished.connect(self._refresh_rospackgraph)
         self._widget.filter_line_edit.setCompleter(completer)
         self._widget.filter_line_edit.selectionChanged.connect(self._clear_filter)
-        
+
         self._widget.with_stacks_check_box.clicked.connect(self._refresh_rospackgraph)
         self._widget.mark_check_box.clicked.connect(self._refresh_rospackgraph)
         self._widget.colorize_check_box.clicked.connect(self._refresh_rospackgraph)
@@ -181,7 +186,7 @@ class RosPackGraph(Plugin):
         self._deferred_fit_in_view.emit()
 
         context.add_widget(self._widget)
-        
+
         # If in either of following case, this turnes True
         # - 1st filtering key is already input by user
         # - filtering key is restored
@@ -191,17 +196,25 @@ class RosPackGraph(Plugin):
         self._update_thread.kill()
 
     def save_settings(self, plugin_settings, instance_settings):
-        instance_settings.set_value('depth_combo_box_index', self._widget.depth_combo_box.currentIndex())
-        instance_settings.set_value('directions_combo_box_index', self._widget.directions_combo_box.currentIndex())
-        instance_settings.set_value('package_type_combo_box', self._widget.package_type_combo_box.currentIndex())
+        instance_settings.set_value(
+            'depth_combo_box_index', self._widget.depth_combo_box.currentIndex())
+        instance_settings.set_value(
+            'directions_combo_box_index', self._widget.directions_combo_box.currentIndex())
+        instance_settings.set_value(
+            'package_type_combo_box', self._widget.package_type_combo_box.currentIndex())
         instance_settings.set_value('filter_line_edit_text', self._widget.filter_line_edit.text())
-        instance_settings.set_value('with_stacks_state', self._widget.with_stacks_check_box.isChecked())
-        instance_settings.set_value('hide_transitives_state', self._widget.hide_transitives_check_box.isChecked())
-        instance_settings.set_value('show_system_state', self._widget.show_system_check_box.isChecked())
+        instance_settings.set_value(
+            'with_stacks_state', self._widget.with_stacks_check_box.isChecked())
+        instance_settings.set_value(
+            'hide_transitives_state', self._widget.hide_transitives_check_box.isChecked())
+        instance_settings.set_value(
+            'show_system_state', self._widget.show_system_check_box.isChecked())
         instance_settings.set_value('mark_state', self._widget.mark_check_box.isChecked())
         instance_settings.set_value('colorize_state', self._widget.colorize_check_box.isChecked())
-        instance_settings.set_value('auto_fit_graph_check_box_state', self._widget.auto_fit_graph_check_box.isChecked())
-        instance_settings.set_value('highlight_connections_check_box_state', self._widget.highlight_connections_check_box.isChecked())
+        instance_settings.set_value(
+            'auto_fit_graph_check_box_state', self._widget.auto_fit_graph_check_box.isChecked())
+        instance_settings.set_value('highlight_connections_check_box_state',
+                                    self._widget.highlight_connections_check_box.isChecked())
 
     def restore_settings(self, plugin_settings, instance_settings):
         _str_filter = instance_settings.value('filter_line_edit_text', '')
@@ -210,18 +223,28 @@ class RosPackGraph(Plugin):
             _str_filter = '(Separate pkgs by comma)'
         else:
             self._filtering_started = True
-        
-        self._widget.depth_combo_box.setCurrentIndex(int(instance_settings.value('depth_combo_box_index', 0)))
-        self._widget.directions_combo_box.setCurrentIndex(int(instance_settings.value('directions_combo_box_index', 0)))
-        self._widget.package_type_combo_box.setCurrentIndex(int(instance_settings.value('package_type_combo_box', 0)))
+
+        self._widget.depth_combo_box.setCurrentIndex(
+            int(instance_settings.value('depth_combo_box_index', 0)))
+        self._widget.directions_combo_box.setCurrentIndex(
+            int(instance_settings.value('directions_combo_box_index', 0)))
+        self._widget.package_type_combo_box.setCurrentIndex(
+            int(instance_settings.value('package_type_combo_box', 0)))
         self._widget.filter_line_edit.setText(_str_filter)
-        self._widget.with_stacks_check_box.setChecked(instance_settings.value('with_stacks_state', True) in [True, 'true'])
-        self._widget.mark_check_box.setChecked(instance_settings.value('mark_state', True) in [True, 'true'])
-        self._widget.colorize_check_box.setChecked(instance_settings.value('colorize_state', False) in [True, 'true'])
-        self._widget.hide_transitives_check_box.setChecked(instance_settings.value('hide_transitives_state', False) in [True, 'true'])
-        self._widget.show_system_check_box.setChecked(instance_settings.value('show_system_state', False) in [True, 'true'])
-        self._widget.auto_fit_graph_check_box.setChecked(instance_settings.value('auto_fit_graph_check_box_state', True) in [True, 'true'])
-        self._widget.highlight_connections_check_box.setChecked(instance_settings.value('highlight_connections_check_box_state', True) in [True, 'true'])
+        self._widget.with_stacks_check_box.setChecked(
+            instance_settings.value('with_stacks_state', True) in [True, 'true'])
+        self._widget.mark_check_box.setChecked(
+            instance_settings.value('mark_state', True) in [True, 'true'])
+        self._widget.colorize_check_box.setChecked(
+            instance_settings.value('colorize_state', False) in [True, 'true'])
+        self._widget.hide_transitives_check_box.setChecked(
+            instance_settings.value('hide_transitives_state', False) in [True, 'true'])
+        self._widget.show_system_check_box.setChecked(
+            instance_settings.value('show_system_state', False) in [True, 'true'])
+        self._widget.auto_fit_graph_check_box.setChecked(instance_settings.value(
+            'auto_fit_graph_check_box_state', True) in [True, 'true'])
+        self._widget.highlight_connections_check_box.setChecked(instance_settings.value(
+            'highlight_connections_check_box_state', True) in [True, 'true'])
         self.initialized = True
         self._refresh_rospackgraph()
 
@@ -240,9 +263,12 @@ class RosPackGraph(Plugin):
         self._refresh_rospackgraph(force_update=True)
 
     def _update_options(self):
-        self._options['depth'] = self._widget.depth_combo_box.itemData(self._widget.depth_combo_box.currentIndex())
-        self._options['directions'] = self._widget.directions_combo_box.itemData(self._widget.directions_combo_box.currentIndex())
-        self._options['package_types'] = self._widget.package_type_combo_box.itemData(self._widget.package_type_combo_box.currentIndex())
+        self._options['depth'] = self._widget.depth_combo_box.itemData(
+            self._widget.depth_combo_box.currentIndex())
+        self._options['directions'] = self._widget.directions_combo_box.itemData(
+            self._widget.directions_combo_box.currentIndex())
+        self._options['package_types'] = self._widget.package_type_combo_box.itemData(
+            self._widget.package_type_combo_box.currentIndex())
         self._options['with_stacks'] = self._widget.with_stacks_check_box.isChecked()
         self._options['mark_selected'] = self._widget.mark_check_box.isChecked()
         self._options['hide_transitives'] = self._widget.hide_transitives_check_box.isChecked()
@@ -252,7 +278,8 @@ class RosPackGraph(Plugin):
         self._options['names'] = self._widget.filter_line_edit.text().split(',')
         if self._options['names'] == [u'None']:
             self._options['names'] = []
-        self._options['highlight_level'] = 3 if self._widget.highlight_connections_check_box.isChecked() else 1
+        self._options['highlight_level'] = \
+            3 if self._widget.highlight_connections_check_box.isChecked() else 1
         self._options['auto_fit'] = self._widget.auto_fit_graph_check_box.isChecked()
 
     def _refresh_rospackgraph(self, force_update=False):
@@ -303,24 +330,26 @@ class RosPackGraph(Plugin):
             descendants = False
         if self._options['directions'] == 0:
             ancestors = False
-        return self.dotcode_generator.generate_dotcode(dotcode_factory=self.dotcode_factory,
-                                                       selected_names=includes,
-                                                       excludes=excludes,
-                                                       depth=self._options['depth'],
-                                                       with_stacks=self._options['with_stacks'],
-                                                       descendants=descendants,
-                                                       ancestors=ancestors,
-                                                       mark_selected=self._options['mark_selected'],
-                                                       colortheme=self._options['colortheme'],
-                                                       hide_transitives=self._options['hide_transitives'],
-                                                       show_system=self._options['show_system'],
-                                                       hide_wet=self._options['package_types'] == 1,
-                                                       hide_dry=self._options['package_types'] == 2)
+        return self.dotcode_generator.generate_dotcode(
+            dotcode_factory=self.dotcode_factory,
+            selected_names=includes,
+            excludes=excludes,
+            depth=self._options['depth'],
+            with_stacks=self._options['with_stacks'],
+            descendants=descendants,
+            ancestors=ancestors,
+            mark_selected=self._options['mark_selected'],
+            colortheme=self._options['colortheme'],
+            hide_transitives=self._options['hide_transitives'],
+            show_system=self._options['show_system'],
+            hide_wet=self._options['package_types'] == 1,
+            hide_dry=self._options['package_types'] == 2)
 
     # this runs in a non-gui thread, so don't access widgets here directly
     def _update_graph(self, dotcode):
         self._current_dotcode = dotcode
-        self._nodes, self._edges = self.dot_to_qt.dotcode_to_qt_items(self._current_dotcode, self._options['highlight_level'])
+        self._nodes, self._edges = self.dot_to_qt.dotcode_to_qt_items(
+            self._current_dotcode, self._options['highlight_level'])
 
     def _generate_tool_tip(self, url):
         if url is not None and ':' in url:
@@ -359,7 +388,8 @@ class RosPackGraph(Plugin):
 
     def _load_dot(self, file_name=None):
         if file_name is None:
-            file_name, _ = QFileDialog.getOpenFileName(self._widget, self.tr('Open graph from file'), None, self.tr('DOT graph (*.dot)'))
+            file_name, _ = QFileDialog.getOpenFileName(
+                self._widget, self.tr('Open graph from file'), None, self.tr('DOT graph (*.dot)'))
             if file_name is None or file_name == '':
                 return
 
@@ -389,7 +419,8 @@ class RosPackGraph(Plugin):
         self._widget.graphics_view.fitInView(self._scene.itemsBoundingRect(), Qt.KeepAspectRatio)
 
     def _save_dot(self):
-        file_name, _ = QFileDialog.getSaveFileName(self._widget, self.tr('Save as DOT'), 'rospackgraph.dot', self.tr('DOT graph (*.dot)'))
+        file_name, _ = QFileDialog.getSaveFileName(
+            self._widget, self.tr('Save as DOT'), 'rospackgraph.dot', self.tr('DOT graph (*.dot)'))
         if file_name is None or file_name == '':
             return
 
@@ -401,7 +432,11 @@ class RosPackGraph(Plugin):
         handle.close()
 
     def _save_svg(self):
-        file_name, _ = QFileDialog.getSaveFileName(self._widget, self.tr('Save as SVG'), 'rospackgraph.svg', self.tr('Scalable Vector Graphic (*.svg)'))
+        file_name, _ = QFileDialog.getSaveFileName(
+            self._widget,
+            self.tr('Save as SVG'),
+            'rospackgraph.svg',
+            self.tr('Scalable Vector Graphic (*.svg)'))
         if file_name is None or file_name == '':
             return
 
@@ -415,17 +450,23 @@ class RosPackGraph(Plugin):
         painter.end()
 
     def _save_image(self):
-        file_name, _ = QFileDialog.getSaveFileName(self._widget, self.tr('Save as image'), 'rospackgraph.png', self.tr('Image (*.bmp *.jpg *.png *.tiff)'))
+        file_name, _ = QFileDialog.getSaveFileName(
+            self._widget,
+            self.tr('Save as image'),
+            'rospackgraph.png',
+            self.tr('Image (*.bmp *.jpg *.png *.tiff)'))
         if file_name is None or file_name == '':
             return
 
-        img = QImage((self._scene.sceneRect().size() * 2.0).toSize(), QImage.Format_ARGB32_Premultiplied)
+        img = QImage(
+            (self._scene.sceneRect().size() * 2.0).toSize(),
+            QImage.Format_ARGB32_Premultiplied)
         painter = QPainter(img)
         painter.setRenderHint(QPainter.Antialiasing)
         self._scene.render(painter)
         painter.end()
         img.save(file_name)
-    
+
     def _clear_filter(self):
         if not self._filtering_started:
             self._widget.filter_line_edit.setText('')
