@@ -1,3 +1,26 @@
+## rqt_dep (noetic) - 0.4.11-1
+
+The packages in the `rqt_dep` repository were released into the `noetic` distro by running `/usr/bin/bloom-release --rosdistro noetic --track noetic rqt_dep` on `Wed, 07 Apr 2021 22:09:05 -0000`
+
+The `rqt_dep` package was released.
+
+Version of package(s) in repository `rqt_dep`:
+
+- upstream repository: https://github.com/ros-visualization/rqt_dep.git
+- release repository: https://github.com/ros-gbp/rqt_dep-release.git
+- rosdistro version: `0.4.10-1`
+- old version: `0.4.10-1`
+- new version: `0.4.11-1`
+
+Versions of tools used:
+
+- bloom version: `0.10.6`
+- catkin_pkg version: `0.4.23`
+- rosdep version: `0.20.0`
+- rosdistro version: `0.8.3`
+- vcstools version: `0.1.42`
+
+
 ## rqt_dep (noetic) - 0.4.10-1
 
 The packages in the `rqt_dep` repository were released into the `noetic` distro by running `/usr/bin/bloom-release -r noetic -t noetic rqt_dep` on `Tue, 17 Mar 2020 18:21:19 -0000`
